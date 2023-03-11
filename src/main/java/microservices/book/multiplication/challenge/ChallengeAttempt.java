@@ -12,7 +12,7 @@ import microservices.book.multiplication.user.User;
 @AllArgsConstructor
 public class ChallengeAttempt {
     private Long id;
-    private Long userId;
+    private User user;
     private int factorA;
     private int factorB;
     private int resultAttempt;
