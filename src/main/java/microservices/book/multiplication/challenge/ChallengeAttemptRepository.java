@@ -5,7 +5,7 @@ import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
 
-public interface ChallengeAttemptRespository extends CrudRepository<ChallengeAttempt, Long> {
+public interface ChallengeAttemptRepository extends CrudRepository<ChallengeAttempt, Long> {
 
     /**
      * @return the last 10 attempts for a given user, identified by their alias.

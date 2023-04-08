@@ -25,7 +25,7 @@ public class ChallengeServiceTest {
     @Mock
     private UserRepository userRepository;
     @Mock
-    private ChallengeAttemptRespository attemptRepository;
+    private ChallengeAttemptRepository attemptRepository;
 
     @BeforeEach
     public void setUp() {
