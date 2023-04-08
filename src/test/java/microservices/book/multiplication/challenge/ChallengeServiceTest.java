@@ -25,52 +25,74 @@ public class ChallengeServiceTest {
     @Mock
     private UserRepository userRepository;
     @Mock
-    private ChallengeAttemptRespository attemptRespository;
+    private ChallengeAttemptRespository attemptRepository;
 
     @BeforeEach
     public void setUp() {
         challengeService = new ChallengeServiceImpl(
                 userRepository,
-                attemptRespository
+                attemptRepository
         );
-        given(attemptRespository.save(any()))
+        given(attemptRepository.save(any()))
                 .will(returnsFirstArg());
     }
 
     @Test
     public void checkCorrectAttemptTest() {
-        //given
+        // given
+        given(attemptRepository.save(any()))
+                .will(returnsFirstArg());
         ChallengeAttemptDTO attemptDTO =
                 new ChallengeAttemptDTO(50, 60, "john_doe", 3000);
 
-        //when
+        // when
         ChallengeAttempt resultAttempt =
                 challengeService.verifyAttempt(attemptDTO);
 
-        //then
+        // then
         then(resultAttempt.isCorrect()).isTrue();
-        //newly added lines
         verify(userRepository).save(new User("john_doe"));
-        verify(attemptRespository).save(resultAttempt);
+        verify(attemptRepository).save(resultAttempt);
+    }
+
+    @Test
+    public void checkWrongAttemptTest() {
+        // given
+        given(attemptRepository.save(any()))
+                .will(returnsFirstArg());
+        ChallengeAttemptDTO attemptDTO =
+                new ChallengeAttemptDTO(50, 60, "john_doe", 5000);
+
+        // when
+        ChallengeAttempt resultAttempt =
+                challengeService.verifyAttempt(attemptDTO);
+
+        // then
+        then(resultAttempt.isCorrect()).isFalse();
+        verify(userRepository).save(new User("john_doe"));
+        verify(attemptRepository).save(resultAttempt);
     }
 
     @Test
     public void checkExistingUserTest() {
-        //given
+        // given
+        given(attemptRepository.save(any()))
+                .will(returnsFirstArg());
         User existingUser = new User(1L, "john_doe");
         given(userRepository.findByAlias("john_doe"))
                 .willReturn(Optional.of(existingUser));
         ChallengeAttemptDTO attemptDTO =
                 new ChallengeAttemptDTO(50, 60, "john_doe", 5000);
 
-        //when
+        // when
         ChallengeAttempt resultAttempt =
                 challengeService.verifyAttempt(attemptDTO);
 
-        //then
+        // then
         then(resultAttempt.isCorrect()).isFalse();
         then(resultAttempt.getUser()).isEqualTo(existingUser);
         verify(userRepository, never()).save(any());
-        verify(attemptRespository).save(resultAttempt);
+        verify(attemptRepository).save(resultAttempt);
     }
+
 }
